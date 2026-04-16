@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InnoGen Pharmaceuticals QR Studio</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+
+    <style>
+        :root {
+            --innogen-purple: #6b21a8;
+            --innogen-bg: #f8fafc;
+            --border: #e2e8f0;
+            --text-main: #1e293b;
+        }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: var(--innogen-bg);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            color: var(--text-main);
+            padding: 30px 0;
+        }
+        .dashboard {
+            display: grid;
+            grid-template-columns: 360px 1fr;
+            background: white;
+            width: 95vw;
+            max-width: 1050px;
+            min-height: 650px;
+            height: auto;
+            border-radius: 16px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+        .sidebar {
+            padding: 30px;
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            background: #ffffff;
+            overflow-y: auto;
+            max-height: 80vh;
+        }
+        .header {
+            margin-bottom: 25px;
+        }
+        .brand {
+            color: var(--innogen-purple);
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin: 0;
+            letter-spacing: -0.5px;
+        }
+        .line {
+            height: 4px;
+            background: var(--innogen-purple);
+            width: 50px;
+            margin-top: 5px;
+        }
+        .control-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            font-size: 11px;
+            font-weight: 700;
+            color: #64748b;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+        .type-row, .logo-source {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .type-row label, .logo-source label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #334155;
+            text-transform: none;
+            margin-bottom: 0;
+        }
+        .logo-thumb {
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: white;
+            object-fit: contain;
+            padding: 4px;
+            box-sizing: border-box;
+        }
+        input[type="text"], input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 14px;
+            box-sizing: border-box;
+            min-height: 48px;
+            resize: vertical;
+        }
+        input[type="color"] {
+            width: 100%;
+            height: 40px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        input[type="range"] {
+            width: 100%;
+        }
+        .color-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        .btn-action {
+            margin-top: auto;
+            background: var(--innogen-purple);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-action:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+        .preview-area {
+            background: #f1f5f9;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            position: relative;
+        }
+        .canvas-bg {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 10px 15px rgba(0,0,0,0.05);
+            display: none;
+        }
+        canvas {
+            max-width: 100%;
+            height: auto;
+            border-radius: 4px;
+        }
+        .empty-state {
+            text-align: center;
+            color: #94a3b8;
+        }
+        .download-link {
+            margin-top: 20px;
+            background: #0f172a;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            display: none;
+        }
+        .footer {
+            position: absolute;
+            bottom: 20px;
+            font-size: 10px;
+            color: #64748b;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <div class="sidebar">
+            <div class="header">
+                <h1 class="brand">InnoGen QR Studio</h1>
+                <div class="line"></div>
+            </div>
+            <div class="control-group">
+                <label>Content Type</label>
+                <div class="type-row">
+                    <label><input type="radio" name="qrType" value="url" checked onchange="toggleQRType()"> URL | Label | Code Scanning</label>
+                    <label><input type="radio" name="qrType" value="vcard" onchange="toggleQRType()"> Digital Business Card (vCard)</label>
+                </div>
+            </div>
+            <div id="urlInputs" class="control-group" style="display:block;">
+                <label>Target URL Link | Plain Label, Text or Code</label>
+                <textarea id="qrText" rows="2" placeholder="http://www.innogen-pharma.com"></textarea>
+            </div>
+            <div id="vcardInputs" style="display:none;">
+                <div class="control-group">
+                    <label>Full Name (FN)</label>
+                    <input type="text" id="qrFn" placeholder="Juan Dela Cruz">
+                </div>
+                <div class="control-group">
+                    <label>Organization (ORG)</label>
+                    <input type="text" id="qrOrg" value="Innogen Pharmaceuticals Inc.">
+                </div>
+                <div class="control-group">
+                    <label>Mobile (TEL)</label>
+                    <input type="text" id="qrCell" placeholder="+63 900 000 0000">
+                </div>
+                <div class="control-group">
+                    <label>Email (EMAIL)</label>
+                    <input type="text" id="qrEmail" placeholder="juan.delacruz@example.com">
+                </div>
+                <div class="control-group">
+                    <label>Address (ADR)</label>
+                    <input type="text" id="qrAddress" value="No. 124-126 Sct. Dr. Lazcano St., Brgy. Sacred Heart, Quezon City, 1103">
+                </div>
+                <div class="control-group">
+                    <label>Website (URL)</label>
+                    <input type="text" id="qrUrlVcard" value="http://www.innogen-pharma.com">
+                </div>
+            </div>
+            <div class="color-row">
+                <div class="control-group">
+                    <label>QR Color</label>
+                    <input type="color" id="qrColor" value="#6b21a8">
+                </div>
+                <div class="control-group">
+                    <label>Logo Scale</label>
+                    <input type="range" id="logoSize" min="100" max="300" value="150">
+                </div>
+            </div>
+            <div class="control-group">
+                <label>Center Logo</label>
+                <div id="uploadBox">
+                    <input type="file" id="logoUpload" accept="image/*">
+                </div>
+                <div style="margin-top:12px;">
+                    <label>Select center logo</label>
+                    <div class="logo-source">
+                        <label>
+                            <input type="radio" name="logoSource" value="upload" checked onchange="toggleLogoSource()">
+                            Use uploaded image (Default)
+                        </label>
+                        <label>
+                            <input type="radio" name="logoSource" value="innogen" onchange="toggleLogoSource()">
+                            <img class="logo-thumb" src="favicon.png" alt="InnoGen">
+                            InnoGen
+                        </label>
+                        <label>
+                            <input type="radio" name="logoSource" value="solvang" onchange="toggleLogoSource()">
+                            <img class="logo-thumb" src="solvang-favicon.png" alt="Solvang">
+                            Solvang
+                        </label>
+                        <label>
+                            <input type="radio" name="logoSource" value="none" onchange="toggleLogoSource()">
+                            No icon
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <button class="btn-action" onclick="generateInnoGenAsset()">Generate QR Asset</button>
+        </div>
+
+        <div class="preview-area">
+            <div id="msg" class="empty-state">
+                <p>Ready for generation...<br>Please enter a link and upload your logo.</p>
+            </div>
+            <div class="canvas-bg" id="canvasBox">
+                <canvas id="finalCanvas"></canvas>
+            </div>
+            <a id="dlBtn" class="download-link">Download PNG Asset</a>
+            <div class="footer">
+                <strong style="color:var(--innogen-purple);">InnoGen Pharmaceuticals Inc.</strong><br>
+                124-126 Dr. Lazcano St. Brgy. Sacred Heart, Quezon City
+            </div>
+        </div>
+    </div>
+
+    <div id="hiddenQR" style="display:none;"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script>
+        function escapeVCardValue(value) {
+            return String(value)
+                .replace(/\\/g, '\\\\')
+                .replace(/\r\n|\r|\n/g, '\\n')
+                .replace(/;/g, '\\;')
+                .replace(/,/g, '\\,');
+        }
+        function buildVCardN(name) {
+            const raw = name.trim();
+            if (!raw) return 'N:;;;;';
+            if (raw.includes(',')) {
+                const parts = raw.split(',');
+                const last = parts[0].trim();
+                const firstAndMiddle = (parts[1] || '').trim();
+                const fm = firstAndMiddle.split(/\s+/).filter(Boolean);
+                const first = fm.shift() || '';
+                const middle = fm.join(' ');
+                return `N:${escapeVCardValue(last)};${escapeVCardValue(first)};${escapeVCardValue(middle)};;`;
+            } else {
+                const tokens = raw.split(/\s+/).filter(Boolean);
+                if (tokens.length === 1) {
+                    return `N:${escapeVCardValue(tokens[0])};;;;`;
+                }
+                const first = tokens.shift();
+                const last = tokens.pop();
+                const middle = tokens.join(' ');
+                return `N:${escapeVCardValue(last)};${escapeVCardValue(first)};${escapeVCardValue(middle)};;`;
+            }
+        }
+        function toggleQRType() {
+            const isVcard = document.querySelector('input[name="qrType"]:checked').value === 'vcard';
+            document.getElementById('urlInputs').style.display = isVcard ? 'none' : 'block';
+            document.getElementById('vcardInputs').style.display = isVcard ? 'block' : 'none';
+        }
+        function toggleLogoSource() {
+            const el = document.querySelector('input[name="logoSource"]:checked');
+            const value = el ? el.value : 'upload';
+            document.getElementById('uploadBox').style.display = value === 'upload' ? 'block' : 'none';
+        }
+        function generateInnoGenAsset() {
+            const type = document.querySelector('input[name="qrType"]:checked').value;
+            let text = '';
+            if (type === 'url') {
+                text = document.getElementById('qrText').value.trim();
+            } else {
+                const fn = document.getElementById('qrFn').value.trim();
+                const org = document.getElementById('qrOrg').value.trim();
+                const cell = document.getElementById('qrCell').value.trim();
+                const email = document.getElementById('qrEmail').value.trim();
+                const address = document.getElementById('qrAddress').value.trim();
+                const url = document.getElementById('qrUrlVcard').value.trim();
+                if (!fn) {
+                    alert('Please enter Full Name (FN) for V-Card.');
+                    return;
+                }
+                text = [
+                    'BEGIN:VCARD',
+                    'VERSION:4.0',
+                    buildVCardN(fn),
+                    `FN:${escapeVCardValue(fn)}`,
+                    org ? `ORG:${escapeVCardValue(org)}` : null,
+                    cell ? `TEL;TYPE=cell:${escapeVCardValue(cell)}` : null,
+                    email ? `EMAIL:${escapeVCardValue(email)}` : null,
+                    address ? `ADR;TYPE=WORK:;;${escapeVCardValue(address)};;;;` : null,
+                    url ? `URL:${escapeVCardValue(url)}` : null,
+                    'END:VCARD'
+                ].filter(Boolean).join('\n');
+            }
+            const color = document.getElementById('qrColor').value;
+            const logoFile = document.getElementById('logoUpload').files[0];
+            const logoScale = parseInt(document.getElementById('logoSize').value);
+            const canvas = document.getElementById('finalCanvas');
+            const ctx = canvas.getContext('2d');
+            const qrDiv = document.getElementById('hiddenQR');
+
+            if (!text) {
+                alert('Please enter a value.');
+                return;
+            }
+
+            qrDiv.innerHTML = '';
+            const qr = new QRCode(qrDiv, {
+                text: text,
+                width: 1000,
+                height: 1000,
+                colorDark: color,
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.H
+            });
+
+            setTimeout(() => {
+                const qrImg = qrDiv.querySelector('img');
+                canvas.width = 1000;
+                canvas.height = 1000;
+                ctx.fillStyle = 'white';
+                ctx.fillRect(0, 0, 1000, 1000);
+                ctx.drawImage(qrImg, 0, 0);
+
+                const logoSourceEl = document.querySelector('input[name="logoSource"]:checked');
+                const logoSource = logoSourceEl ? logoSourceEl.value : 'upload';
+                if (logoSource === 'innogen' || logoSource === 'solvang') {
+                    const img = new Image();
+                    img.onload = function() {
+                        const x = (1000 - logoScale) / 2;
+                        const y = (1000 - logoScale) / 2;
+                        ctx.fillStyle = 'white';
+                        ctx.beginPath();
+                        ctx.roundRect(x - 20, y - 20, logoScale + 40, logoScale + 40, 25);
+                        ctx.fill();
+                        ctx.drawImage(img, x, y, logoScale, logoScale);
+                        reveal();
+                    };
+                    img.src = logoSource === 'innogen' ? 'favicon.png' : 'solvang-favicon.png';
+                } else if (logoSource === 'upload' && logoFile) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const img = new Image();
+                        img.onload = function() {
+                            const x = (1000 - logoScale) / 2;
+                            const y = (1000 - logoScale) / 2;
+                            ctx.fillStyle = 'white';
+                            ctx.beginPath();
+                            ctx.roundRect(x - 20, y - 20, logoScale + 40, logoScale + 40, 25);
+                            ctx.fill();
+                            ctx.drawImage(img, x, y, logoScale, logoScale);
+                            reveal();
+                        };
+                        img.src = e.target.result;
+                    };
+                    reader.readAsDataURL(logoFile);
+                } else {
+                    reveal();
+                }
+            }, 250);
+
+            function reveal() {
+                document.getElementById('msg').style.display = 'none';
+                document.getElementById('canvasBox').style.display = 'block';
+                const btn = document.getElementById('dlBtn');
+                btn.style.display = 'inline-block';
+                btn.href = document.getElementById('finalCanvas').toDataURL();
+                btn.download = 'InnoGenBrandedQR.png';
+            }
+        }
+        toggleLogoSource();
+    </script>
+</body>
+</html>
