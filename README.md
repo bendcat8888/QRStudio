@@ -1,89 +1,71 @@
-# InnoGen QR Studio
+# 🎨 InnoGen QR Studio
+**High-Resolution Branded QR Asset Generator for Enterprise Marketing & Logistics**
 
-A lightweight, browser-based tool for generating branded QR code PNG assets for InnoGen (and Solvang) use cases. It supports QR codes for website links, plain text, and a “Digital Business Card (vCard)” format that works well on both Android and iPhone.
+[![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/HTML)
+[![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
+[![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/CSS)
 
-## Why this exists
+## 🛠 Tech Stack
 
-- Speeds up creation of consistent, branded QR codes for posters, packaging, brochures, booths, email signatures, and internal materials.
-- Reduces back-and-forth between teams by letting anyone generate a ready-to-use PNG asset in seconds.
-- Ensures brand consistency through built-in icon presets and color control.
+| Category | Tools |
+| :--- | :--- |
+| **Frontend** | Pure HTML5, CSS3, and Vanilla JavaScript |
+| **Libraries** | `qrcodejs` (Client-side QR generation) |
+| **Architecture** | Serverless / Static Client-Side Application |
+| **Output Formats** | High-Resolution PNG with transparency support |
+| **Compatibility** | vCard 3.0 Standard (Cross-platform iOS/Android) |
 
-## Key Features
+---
 
-- **QR Content Types**
-  - **URL | Label | Code Scanning**: Paste a URL, plain text, labels, or multi-line content.
-  - **Digital Business Card (vCard)**: Generate a scannable contact card that can be saved into phone contacts.
+## 🎯 Project Overview
+**InnoGen QR Studio** is a lightweight, browser-based utility designed to standardize and speed up the creation of branded QR code assets. By centralizing this process, the tool ensures that every QR code used on pharmaceutical packaging, marketing brochures, and business cards meets corporate branding guidelines.
 
-- **Branding Controls**
-  - **QR color picker** (brand-aligned color output)
-  - **Center logo scale** slider
-  - **Center logo selection**
-    - Use uploaded image (default)
-    - InnoGen icon (`favicon.png`)
-    - Solvang icon (`solvang-favicon.png`)
-    - No icon
+### 🌟 Business Value & Impact
+* **Efficiency:** Eliminated the "back-and-forth" between design and operations teams, allowing instant asset generation.
+* **Brand Consistency:** Built-in presets for **InnoGen** and **Solvang** logos/colors ensure every asset is brand-aligned.
+* **Cross-Platform Reliability:** Engineered specialized **vCard logic** to ensure seamless contact saving on both iPhone and Android devices.
 
-- **Output**
-  - Generates a high-resolution **PNG** QR asset for download.
+---
 
-## Getting Started
+## 🚀 Key Professional Features
 
-### Option A: Open directly (simplest)
-1. Open `index.html` in a browser (Chrome/Edge recommended).
-2. Choose a content type (URL/Text or vCard).
-3. Adjust color/logo options.
-4. Click **Generate QR Asset**.
-5. Click **Download PNG Asset**.
+### 📐 Precision Branding Controls
+* **Center-Logo Integration:** Advanced canvas rendering allows for custom logo overlays with adjustable scaling.
+* **Dynamic Color Mapping:** Real-time color picker to match specific hex codes for corporate branding.
+* **High-Res Export:** Optimized PNG output suitable for professional printing on posters and booths.
 
-### Option B: Run as a local static site (recommended for some browsers)
-From the project folder, run one of the following:
+### 📇 Advanced vCard Logic
+* **Smart Parsing:** Specifically handles `N:` and `FN:` structured name fields to solve common display bugs on iOS devices.
+* **Rich Metadata:** Supports Organization, Mobile, Email, and URL fields in a single scannable contact asset.
 
-**PowerShell (Windows)**
+### ⚡ Serverless Portability
+* **Zero Overhead:** Runs entirely in the browser. No backend database or server-side processing required, ensuring maximum privacy and speed.
+* **Portable Deployment:** Can be hosted as a simple static site or run locally via a Python HTTP server.
+
+---
+
+## ⚙️ How to Use
+
+### 1. Simple Access
+Open `index.html` in any modern browser (Chrome or Edge recommended).
+
+### 2. Local Hosting (Optional)
+To run as a local static site for team access:
 ```powershell
 python -m http.server 8000
 ```
 
-Then open:
-- http://localhost:8000/
+---
 
-## Usage Guide
+## 📜 License & Intellectual Property
+**Copyright (c) 2026 Benedic Cater / InnoGen Pharmaceuticals Inc. (Solvang)**
 
-### 1) URL | Label | Code Scanning
-- Paste or type any content into the multi-line textbox.
-- Use this for links, labels, short instructions, or internal codes.
+**All Rights Reserved.**
+This repository is published for **portfolio review and technical demonstration purposes only.**
 
-### 2) Digital Business Card (vCard)
-Fill in:
-- **Full Name (FN)** (required)
-- Organization, mobile (TEL), email, address, website (optional)
+**Strict Restrictions:**
+- **No Reproduction:** No part of this code may be copied, modified, or distributed.
+- **Brand Protection:** Use of the "InnoGen" or "Solvang" name, branding, or logos is strictly prohibited.
+- **Data Privacy:** Use of any proprietary data or business logic contained herein for commercial or personal projects is strictly prohibited.
 
-The generated vCard includes both:
-- `N:` (structured name, helps iPhone prioritize the person’s name)
-- `FN:` (display name)
-
-This improves compatibility so iPhone and Android both show the person’s name clearly rather than emphasizing the organization.
-
-## Files
-
-- `index.html` — Application UI and logic
-- `favicon.png` — InnoGen icon option
-- `solvang-favicon.png` — Solvang icon option
-
-## Notes / Limitations
-
-- This is a static, client-side tool: it runs entirely in the browser.
-- QR generation uses a CDN-hosted library (`qrcodejs`), so an internet connection may be required unless you replace it with a local copy.
-- Some phone camera apps interpret vCards slightly differently; the tool is designed to be broadly compatible.
-
-## Troubleshooting
-
-- **Center logo not appearing**
-  - Ensure a center logo option is selected.
-  - If using uploaded image, confirm you selected a file.
-- **vCard saves but name looks wrong on iPhone**
-  - Use a clear full name (e.g., “Juan Dela Cruz”).
-  - If your standard format is “Last, First Middle”, enter it that way for better parsing.
-
-## License / Ownership
-
-Internal use (InnoGen Pharmaceuticals Inc.). Update this section if you plan to open-source the project.
+_For professional inquiries or permission requests, please contact Benedic Cater._
